@@ -9,15 +9,7 @@ import aiohttp
 import argparse
 import concurrent
 from PIL import Image
-
-MAX_TASKS = 50
-MAX_RETRY = 3
-TIMEOUT = 10
-
-IMAGE_EXT = {
-    ".png", ".jpg", ".jpeg", ".bmp", ".tiff", ".tif",
-    ".webp", ".heic", ".heif", ".avif", ".jxl",
-}
+from constants import *
 
 def val_and_save(data, output_dir, url, ext):
     try:
@@ -57,8 +49,8 @@ async def download(url, session, thread_pool, output_dir):
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Mass download images using AsyncIO.")
-    parser.add_argument("-i", "--input", default="targets.json", help="The JSON file containing a list of URLs to download, default to \"targets.json\"")
-    parser.add_argument("-o", "--output-dir", default="images", help="The directory to download the images into, default to \"images\"")
+    parser.add_argument("-i", "--input", default=TARGETS_PATH, help=f"The JSON file containing a list of URLs to download, default to \"{TARGETS_PATH}\"")
+    parser.add_argument("-o", "--output-dir", default=IMAGE_DIR, help=f"The directory to download the images into, default to \"{IMAGE_DIR}\"")
     return parser.parse_args()
 
 async def main():
