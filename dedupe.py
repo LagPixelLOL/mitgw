@@ -63,10 +63,23 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Group images together to inspect.")
     parser.add_argument("-i", "--input-dir", default=IMAGE_DIR, help=f"The directory containing the input images, default to \"{IMAGE_DIR}\"")
     parser.add_argument("-o", "--output-dir", default=GROUP_DIR, help=f"The directory to save the grouped images, default to \"{GROUP_DIR}\"")
+    parser.add_argument("-d", "--delete-mode", action="store_true", help="If set, will get all the filenames remaining in the output directory and delete them from the input directory")
     return parser.parse_args()
 
 def main():
     args = parse_args()
+    if args.delete_mode:
+        i = 0
+        for group_basename in os.listdir(args.output_dir):
+            group_dir = os.path.join(args.output_dir, group_basename)
+            for img_basename in os.listdir(group_dir):
+                os.remove(os.path.join(args.input_dir, img_basename))
+                os.remove(os.path.join(group_dir, img_basename))
+                i += 1
+            os.rmdir(group_dir)
+        os.rmdir(args.output_dir)
+        print("Deleted", i, "images, script finished.")
+        return
     paths = [os.path.join(args.input_dir, path) for path in os.listdir(args.input_dir)]
     path_count = len(paths)
     os.makedirs(args.output_dir, exist_ok=True)
@@ -85,6 +98,7 @@ def main():
                     if futures[k].done():
                         del futures[k]
                         pbar.update(1)
+    print("Script finished.")
 
 if __name__ == "__main__":
     try:
