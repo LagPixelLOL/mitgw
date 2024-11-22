@@ -1,6 +1,8 @@
 images/
 groups/
+bkp/
 targets.json
+model.safetensors
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
